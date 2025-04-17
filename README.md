@@ -46,7 +46,7 @@ This project is a complete solution for the provided backend + system simulation
     );
     ```
 
-3. Create `.env` file in `task1_2_backend/`:
+3. Create `.env` file in:
 
     ```env
     DB_NAME=<android_system>
