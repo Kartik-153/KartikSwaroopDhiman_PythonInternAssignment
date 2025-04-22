@@ -6,15 +6,12 @@ import os
 
 load_dotenv()
 
-# ---------- Task 3: Emulator Automation ----------
-
 def start_emulator(avd_name):
     emulator_path = os.getenv('EMULATOR_PATH')
     print(f"Starting emulator: {avd_name}")
     subprocess.Popen([emulator_path, "-avd", avd_name])
     time.sleep(5)
 
-# Full path to your ADB
 ADB_PATH = os.getenv('ADB_PATH')
 
 def wait_for_boot():
@@ -33,19 +30,17 @@ def install_apk(apk_path):
     print(result.stdout or result.stderr)
 
 def get_system_info():
-    package_name = "com.example.myapp"  # Replace this with your app's real package name
+    package_name = "com.example.myapp"  
 
     os_version = subprocess.check_output([ADB_PATH, "shell", "getprop", "ro.build.version.release"]).decode().strip()
     device_model = subprocess.check_output([ADB_PATH, "shell", "getprop", "ro.product.model"]).decode().strip()
     memory = subprocess.check_output([ADB_PATH, "shell", "cat", "/proc/meminfo"]).decode().split("\n")[0]
 
-    # Get app version using dumpsys
     try:
         version_info = subprocess.check_output([
             ADB_PATH, "shell", "dumpsys", "package", package_name
         ]).decode()
 
-        # Extract versionName from the output
         version_line = [line for line in version_info.splitlines() if "versionName=" in line]
         app_version = version_line[0].split("=")[1].strip() if version_line else "Unknown"
     except Exception as e:
@@ -64,7 +59,6 @@ def get_system_info():
 
     return info
 
-# ---------- Task 4: Networking (API call) ----------
 
 def post_to_api(info):
     api_url = "http://127.0.0.1:5000/add-app"
@@ -79,11 +73,10 @@ def post_to_api(info):
     print("Server response:")
     print(response.status_code, response.json())
 
-# ---------- Main Execution ----------
 
 if __name__ == '__main__':
-    AVD_NAME = os.environ('AVD_NAME')  # Replace with your AVD name
-    APK_PATH = os.environ('APK_PATH')
+    AVD_NAME = os.getenv('AVD_NAME')
+    APK_PATH = os.getenv('APK_PATH')
 
     start_emulator(AVD_NAME)
     wait_for_boot()
